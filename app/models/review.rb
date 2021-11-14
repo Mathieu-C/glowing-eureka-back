@@ -1,7 +1,12 @@
 class Review < ApplicationRecord
   validates :rating, :body, presence: true
-  validates :body, length: { minimum: 1, maximum: 2048 }
   validates :rating, inclusion: { in: [1, 2, 3, 4, 5], message: "This rating is not allowed." }
+  validates :body, length: {
+    minimum: 1,
+    maximum: 2048,
+    too_short: "The review message is too short.",
+    too_long: "The review can't be more than %{count} characters long."
+  }
 
   after_create :notify_review_created
 
