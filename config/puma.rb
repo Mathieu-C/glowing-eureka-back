@@ -32,12 +32,24 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 #
 # workers ENV.fetch("WEB_CONCURRENCY") { 2 }
 
+workers Integer(ENV['PUMA_WORKERS'] || 3)
+threads Integer(ENV['MIN_THREADS']  || 1), Integer(ENV['MAX_THREADS'] || 16)
+
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
 # before forking the application. This takes advantage of Copy On Write
 # process behavior so workers use less memory.
 #
-# preload_app!
+preload_app!
+
+on_worker_boot do
+  # worker specific setup
+  ActiveSupport.on_load(:active_record) do
+    config = ActiveRecord::Base.configurations[Rails.env] || Rails.application.config.database_configuration[Rails.env]
+    config['pool'] = ENV['MAX_THREADS'] || 16
+    ActiveRecord::Base.establish_connection(config)
+  end
+end
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
