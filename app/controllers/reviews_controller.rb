@@ -1,4 +1,6 @@
 class ReviewsController < ApplicationController
+  include ActionController::Live
+
   def index
     reviews = Review.all
     render json: { status: 'SUCCESS', data: reviews }, status: :ok
@@ -12,6 +14,22 @@ class ReviewsController < ApplicationController
     else
       render json: { status: 'ERROR', errors: @review.errors }, status: :unprocessable_entity
     end
+  end
+
+  def live
+    response.headers['Content-Type'] = 'text/event-stream'
+
+    sse = SSE.new(response.stream)
+    begin
+      Review.on_change do |data|
+        sse.write(data, event: 'created')
+      end
+    rescue IOError
+      # Client Disconnected
+    ensure
+      sse.close
+    end
+    render nothing: true
   end
 
   private
