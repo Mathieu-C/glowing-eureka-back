@@ -1,24 +1,25 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Requirements
+- Ruby `3.0.2`
+- Rails `6.1.4`
+- Docker
 
-Things you may want to cover:
+## Starting up
+Launch the Docker Postgres, Docker must be running:
+```bash
+$ docker-compose up -d
+```
 
-* Ruby version
+```bash
+# you may have to install gems:
+$ bundle install
 
-* System dependencies
+# run migrations
+$ rake db:migrate
+````
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Run the application:
+```bash
+$ rails s
+```
