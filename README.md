@@ -16,7 +16,7 @@ $ docker-compose up -d
 $ bundle install
 
 # run migrations
-$ rake db.create db:migrate
+$ rake db:create db:migrate
 ````
 
 Run the application:
