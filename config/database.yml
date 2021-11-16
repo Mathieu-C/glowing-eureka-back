@@ -88,3 +88,5 @@ production:
   username: gumroader
   password: gumr04d
   host: localhost
+  pool: 16
+  timeout: 5000
